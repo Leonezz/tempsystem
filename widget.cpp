@@ -33,6 +33,19 @@ OpenChart_demo::OpenChart_demo(QWidget* parent)
 	ui.minTemperatureLCDNumber->setPalette(lcdpat);
 	ui.maxTemperatureLCDNumber->setPalette(lcdpat);
 	ui.chipTemperatureLCDNumber->setPalette(lcdpat);
+
+    QObject::connect(this->ui.reloadButton, &QPushButton::clicked, this, &Widget::reloadButtonClicked);
+#ifdef EXP
+    // this part for experment
+    tempSerialPort = new QSerialPort;
+    tempSerialPort->setPortName("COM5");
+    tempSerialPort->setBaudRate(9600);
+    tempSerialPort->setStopBits(QSerialPort::StopBits::TwoStop);
+    tempSerialPort->setDataBits(QSerialPort::DataBits::Data8);
+    tempSerialPort->open(QIODevice::ReadWrite);
+
+    QObject::connect(this->tempSerialPort, &QSerialPort::readyRead, this, &Widget::getTemp);
+#endif // EXP
 }
 
 
@@ -85,6 +98,8 @@ QJsonObject OpenChart_demo::makeJsonForHtmlSide(Matrix<double, 24, 32> & mat)
 
 void Widget::reloadButtonClicked()
 {
+    QPixmap screenGrap = QPixmap::grabWidget(this, this->rect());
+    screenGrap.save("./exp/" + QString::number(this->maxTemperature)+".png", "png");
     for (const QSerialPortInfo& info : QSerialPortInfo::availablePorts())
     {
         QSerialPort port;
@@ -341,6 +356,7 @@ void OpenChart_demo::enableLCDNumbers(const float min, const float max, const fl
 	ui.maxTemperatureLCDNumber->display(QString("%1 °").arg(max));
 	ui.chipTemperatureLCDNumber->display(QString("%1 °").arg(chip));
 }
+
 
 
 
