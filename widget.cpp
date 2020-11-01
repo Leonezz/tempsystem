@@ -210,6 +210,11 @@ void OpenChart_demo::openSerialportButtonClicked()
 */
 void OpenChart_demo::readSerialData()
 {
+    //experment function call
+#ifdef EXP
+    experment();
+#endif
+
     const int dataLength = 1544;
     QByteArray buf;
     static QByteArray temp;
