@@ -1,0 +1,10 @@
+*.sln
+*.user
+*.vcxproj
+*.filters
+x64/
+release/
+GeneratedFiles/
+debug/
+.vs/
+.vscode/
